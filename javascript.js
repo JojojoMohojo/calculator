@@ -53,16 +53,67 @@ function operate(num1, num2, op) {
             break;
     }
 }
-let displayValue;
+
+function splitMathValue(string) {
+    let operators = ["+", "-", "x", "/"]
+    let operator;
+    let numbers;
+    for (let i = 0; i <= operators.length; i++) {
+        if (string.includes(operators[i])) {
+            numbers = string.split(operators[i]);
+            operator = operators[i];
+        };
+    };
+    return operate(parseInt(numbers[0]), parseInt(numbers[1]), operator).toString();
+};
+
+let mathValue = "";
+let isNumLastPressed = false;
+let isOperatorActive = false;
+let twoNumActive = false;
+
 document.addEventListener("DOMContentLoaded", () => {
     let buttons = document.querySelectorAll("button");
     
     buttons.forEach(button => {
         button.addEventListener("click", () => {
-            if (event.target.id !== "dot" && event.target.id !== "equals" && event.target.id !== "clear") {
-                display.textContent = display.textContent + event.target.textContent;
-                displayValue = display.textContent;
+            if (event.target.classList.contains("num") && isNumLastPressed === false) {
+                display.textContent = event.target.textContent;
+                isNumLastPressed = true;
+                mathValue += event.target.textContent;
+            } else if (event.target.classList.contains("num") && isNumLastPressed === true) {
+                display.textContent += event.target.textContent;
+                isNumLastPressed = true;
+                mathValue += event.target.textContent;
+            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && isOperatorActive === false) {
+                isOperatorActive = true;
+                isNumLastPressed = false;
+                mathValue += event.target.textContent;
+            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && isOperatorActive === true) {
+                mathValue = splitMathValue(mathValue) + event.target.textContent;
+                display.textContent = mathValue;
+                isNumLastPressed = false;
+            } else if (event.target.id = "equals" && twoNumActive === true) {
+                mathValue = splitMathValue(mathValue);
+                display.textContent = mathValue;
+                isNumLastPressed = true;
+                isOperatorActive = false;
+                twoNumActive = false;
             }
+            
+            if (event.target.classList.contains("num") && isOperatorActive === true) {
+                twoNumActive = true;
+            }
+            console.log(`Button pressed: ${event.target.textContent}`)
+            console.log(`mathValue = ${mathValue}`);
+            console.log(`isNumLastPressed = ${isNumLastPressed}`);
+            console.log(`isOperatorActive = ${isOperatorActive}`);
+            console.log(`twoNumActive = ${twoNumActive}`);
         });
     });
+
+    equals.addEventListener("click", () => {
+
+    })
 });
+
