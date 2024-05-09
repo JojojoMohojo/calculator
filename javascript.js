@@ -64,9 +64,12 @@ function splitMathValue(string) {
             operator = operators[i];
         };
     };
-    return operate(parseInt(numbers[0]), parseInt(numbers[1]), operator).toString();
+    if (numbers[0] === "0" || numbers[1] === "0") {
+        return "Oi you bastard!";
+    } else {
+        return operate(parseInt(numbers[0]), parseInt(numbers[1]), operator).toFixed(2).toString();
+    };
 };
-
 let mathValue = "";
 let isNumLastPressed = false;
 let isOperatorActive = false;
@@ -100,6 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 isNumLastPressed = true;
                 isOperatorActive = false;
                 twoNumActive = false;
+
+                if (/\d/.test(mathValue) === false) {
+                    mathValue = "";
+                    isNumLastPressed = false;
+                };
             }
             if (event.target.classList.contains("num") && isOperatorActive === true) {
                 twoNumActive = true;
@@ -113,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 display.textContent = "0";
             }
 
-
             console.log(`Button pressed: ${event.target.textContent}`)
             console.log(`mathValue = ${mathValue}`);
             console.log(`isNumLastPressed = ${isNumLastPressed}`);
@@ -121,9 +128,5 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(`twoNumActive = ${twoNumActive}`);
         });
     });
-
-    equals.addEventListener("click", () => {
-
-    })
 });
 
