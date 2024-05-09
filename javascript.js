@@ -71,6 +71,7 @@ let mathValue = "";
 let isNumLastPressed = false;
 let isOperatorActive = false;
 let twoNumActive = false;
+display.textContent = "0";
 
 document.addEventListener("DOMContentLoaded", () => {
     let buttons = document.querySelectorAll("button");
@@ -89,21 +90,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 isOperatorActive = true;
                 isNumLastPressed = false;
                 mathValue += event.target.textContent;
-            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && isOperatorActive === true) {
+            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && twoNumActive === true) {
+                display.textContent = splitMathValue(mathValue);
                 mathValue = splitMathValue(mathValue) + event.target.textContent;
-                display.textContent = mathValue;
                 isNumLastPressed = false;
-            } else if (event.target.id = "equals" && twoNumActive === true) {
+            } else if (event.target.id === "equals" && isNumLastPressed === true && twoNumActive === true) {
                 mathValue = splitMathValue(mathValue);
                 display.textContent = mathValue;
                 isNumLastPressed = true;
                 isOperatorActive = false;
                 twoNumActive = false;
             }
-            
             if (event.target.classList.contains("num") && isOperatorActive === true) {
                 twoNumActive = true;
             }
+
+            if (event.target.id === "clear") {
+                mathValue = "";
+                isNumLastPressed = false;
+                isOperatorActive = false;
+                twoNumActive = false;
+                display.textContent = "0";
+            }
+
+
             console.log(`Button pressed: ${event.target.textContent}`)
             console.log(`mathValue = ${mathValue}`);
             console.log(`isNumLastPressed = ${isNumLastPressed}`);
