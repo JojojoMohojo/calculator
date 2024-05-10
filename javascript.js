@@ -18,18 +18,26 @@ let clear = document.querySelector("#clear");
 let display = document.querySelector(".display");
 
 function add(a, b) {
+    console.log(a);
+    console.log(b);
     return a + b;
 }
 
 function subtract(a, b) {
+    console.log(a);
+    console.log(b);
     return a - b;
 }
 
 function multiply(a, b) {
+    console.log(a);
+    console.log(b);
     return a * b;
 }
 
 function divide(a, b) {
+    console.log(a);
+    console.log(b);
     return a / b;
 }
 
@@ -64,10 +72,14 @@ function splitMathValue(string) {
             operator = operators[i];
         };
     };
-    if (numbers[0] === "0" || numbers[1] === "0") {
+    if (numbers[1] === "0") {
         return "Oi you bastard!";
     } else {
-        return operate(parseInt(numbers[0]), parseInt(numbers[1]), operator).toFixed(2).toString();
+        if (Number.isInteger(operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator))) {
+            return operate(parseInt(numbers[0]), parseFloat(numbers[1]), operator).toString();
+        } else if (!Number.isInteger(operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator))) {
+            return operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator).toFixed(2).toString();
+        };
     };
 };
 let mathValue = "";
@@ -108,10 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     mathValue = "";
                     isNumLastPressed = false;
                 };
-            }
+            };
+            
             if (event.target.classList.contains("num") && isOperatorActive === true) {
                 twoNumActive = true;
-            }
+            };
 
             if (event.target.id === "clear") {
                 mathValue = "";
@@ -119,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isOperatorActive = false;
                 twoNumActive = false;
                 display.textContent = "0";
-            }
+            };
 
             console.log(`Button pressed: ${event.target.textContent}`)
             console.log(`mathValue = ${mathValue}`);
