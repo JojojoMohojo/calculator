@@ -1,49 +1,20 @@
-let one = document.querySelector("#one");
-let two = document.querySelector("#two");
-let three = document.querySelector("#three");
-let four = document.querySelector("#four");
-let five = document.querySelector("#five");
-let six = document.querySelector("#six");
-let seven = document.querySelector("#seven");
-let eight = document.querySelector("#eight");
-let nine = document.querySelector("#nine");
-let zero = document.querySelector("#zero");
-let divi = document.querySelector("#divi");
-let mult = document.querySelector("#mult");
-let sub = document.querySelector("#sub");
-let plus = document.querySelector("#plus");
-let equals = document.querySelector("#equals");
-let dot = document.querySelector("#dot");
-let clear = document.querySelector("#clear");
 let display = document.querySelector(".display");
 
 function add(a, b) {
-    console.log(a);
-    console.log(b);
     return a + b;
 }
 
 function subtract(a, b) {
-    console.log(a);
-    console.log(b);
     return a - b;
 }
 
 function multiply(a, b) {
-    console.log(a);
-    console.log(b);
     return a * b;
 }
 
 function divide(a, b) {
-    console.log(a);
-    console.log(b);
     return a / b;
 }
-
-let num1;
-let num2;
-let operator;
 
 function operate(num1, num2, op) {
     switch(op) {
@@ -62,83 +33,99 @@ function operate(num1, num2, op) {
     }
 }
 
-function splitMathValue(string) {
-    let operators = ["+", "-", "x", "/"]
-    let operator;
-    let numbers;
-    for (let i = 0; i <= operators.length; i++) {
-        if (string.includes(operators[i])) {
-            numbers = string.split(operators[i]);
-            operator = operators[i];
-        };
-    };
-    if (numbers[1] === "0") {
-        return "Oi you bastard!";
-    } else {
-        if (Number.isInteger(operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator))) {
-            return operate(parseInt(numbers[0]), parseFloat(numbers[1]), operator).toString();
-        } else if (!Number.isInteger(operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator))) {
-            return operate(parseFloat(numbers[0]), parseFloat(numbers[1]), operator).toFixed(2).toString();
-        };
-    };
+function roundToTwoDecimals(number) {
+    return Math.round(number * 100) / 100;
 };
-let mathValue = "";
-let isNumLastPressed = false;
-let isOperatorActive = false;
-let twoNumActive = false;
+
+function resetCalc() {
+    firstNumber = "";
+    secondNumber = "";
+    operator = "";
+    result = undefined;
+    decimalActive = false;
+};
+
 display.textContent = "0";
+let firstNumber = "";
+let secondNumber = "";
+let operator = "";
+let result;
+let decimalActive = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     let buttons = document.querySelectorAll("button");
     
     buttons.forEach(button => {
         button.addEventListener("click", () => {
-            if (event.target.classList.contains("num") && isNumLastPressed === false) {
-                display.textContent = event.target.textContent;
-                isNumLastPressed = true;
-                mathValue += event.target.textContent;
-            } else if (event.target.classList.contains("num") && isNumLastPressed === true) {
-                display.textContent += event.target.textContent;
-                isNumLastPressed = true;
-                mathValue += event.target.textContent;
-            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && isOperatorActive === false) {
-                isOperatorActive = true;
-                isNumLastPressed = false;
-                mathValue += event.target.textContent;
-            } else if (event.target.classList.contains("oper") && isNumLastPressed === true && twoNumActive === true) {
-                display.textContent = splitMathValue(mathValue);
-                mathValue = splitMathValue(mathValue) + event.target.textContent;
-                isNumLastPressed = false;
-            } else if (event.target.id === "equals" && isNumLastPressed === true && twoNumActive === true) {
-                mathValue = splitMathValue(mathValue);
-                display.textContent = mathValue;
-                isNumLastPressed = true;
-                isOperatorActive = false;
-                twoNumActive = false;
 
-                if (/\d/.test(mathValue) === false) {
-                    mathValue = "";
-                    isNumLastPressed = false;
+            if (event.target.classList.contains("num")) {
+                if (operator === "") {
+                    if (firstNumber === "" || result !== undefined) {
+                        firstNumber = event.target.textContent;
+                        display.textContent = event.target.textContent;
+                        
+                    } else {
+                        firstNumber += event.target.textContent;
+                        display.textContent += event.target.textContent;
+                    };
+                } else {
+                    if (secondNumber === "") {
+                        secondNumber = event.target.textContent;
+                        display.textContent = event.target.textContent;
+                    } else {
+                        secondNumber += event.target.textContent;
+                        display.textContent += event.target.textContent;
+                    };
                 };
-            };
-            
-            if (event.target.classList.contains("num") && isOperatorActive === true) {
-                twoNumActive = true;
-            };
-
-            if (event.target.id === "clear") {
-                mathValue = "";
-                isNumLastPressed = false;
-                isOperatorActive = false;
-                twoNumActive = false;
+                result = undefined;
+            } else if (event.target.id === "dot" && decimalActive === false && result === undefined) {
+                if (firstNumber !== "" && secondNumber === "") {
+                    firstNumber += event.target.textContent;
+                    display.textContent += event.target.textContent;
+                } else if (secondNumber !== "") {
+                    secondNumber += event.target.textContent;
+                    display.textContent += event.target.textContent;
+                };
+                decimalActive === true;
+            } else if (event.target.classList.contains("oper")) {
+                if (firstNumber !== "") {
+                    if (operator !== "" && secondNumber !== "") {
+                        if (secondNumber === "0") {
+                            display.textContent = "Oi cheeky cunt";
+                            resetCalc();
+                        } else {
+                            result = operate(parseFloat(firstNumber), parseFloat(secondNumber), operator);
+                            display.textContent = roundToTwoDecimals(result).toString();
+                            operator = event.target.textContent;
+                            firstNumber = result;
+                            secondNumber = "";
+                        };
+                    } else if (operator === "") {
+                        operator = event.target.textContent;
+                    };
+                };
+            } else if (event.target.id === "equals" && secondNumber !== "") {
+                if (secondNumber === "0") {
+                    display.textContent = "Oi cheeky cunt";
+                    resetCalc();
+                } else {
+                    result = operate(parseFloat(firstNumber), parseFloat(secondNumber), operator);
+                    display.textContent = roundToTwoDecimals(result).toString();
+                    firstNumber = result;
+                    operator = "";
+                    secondNumber = "";
+                };      
+            } else if (event.target.id === "clear") {
+                resetCalc();
                 display.textContent = "0";
             };
 
             console.log(`Button pressed: ${event.target.textContent}`)
-            console.log(`mathValue = ${mathValue}`);
-            console.log(`isNumLastPressed = ${isNumLastPressed}`);
-            console.log(`isOperatorActive = ${isOperatorActive}`);
-            console.log(`twoNumActive = ${twoNumActive}`);
+            console.log(`firstNumber = ${firstNumber}`);
+            console.log(`secondNumber = ${secondNumber}`);
+            console.log(`decimal = ${decimalActive}`);
+            console.log(`operator = ${operator}`);
+            console.log(`result = ${result}\n \n \n`);
         });
     });
 });
