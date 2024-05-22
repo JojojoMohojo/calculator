@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             result = operate(parseFloat(firstNumber), parseFloat(secondNumber), operator);
                             display.textContent = roundToTwoDecimals(result).toString();
                             operator = event.target.textContent;
-                            firstNumber = result;
+                            firstNumber = result.toString();
                             secondNumber = "";
                         };
                     } else if (operator === "") {
@@ -111,13 +111,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     result = operate(parseFloat(firstNumber), parseFloat(secondNumber), operator);
                     display.textContent = roundToTwoDecimals(result).toString();
-                    firstNumber = result;
+                    firstNumber = result.toString();
                     operator = "";
                     secondNumber = "";
                 };      
             } else if (event.target.id === "clear") {
                 resetCalc();
                 display.textContent = "0";
+            } else if (event.target.id === "backspace") {
+                if (firstNumber !== "" && operator === "" && firstNumber !== "0" ) {
+                    firstNumber = firstNumber.slice(0, -1);
+                    if (firstNumber === "") {
+                        display.textContent = 0;
+                    } else {
+                        display.textContent = display.textContent.slice(0, -1);
+                    };
+                } else if (secondNumber !== "" && secondNumber !== "0") {
+                    secondNumber = secondNumber.slice(0, -1);
+                    if (secondNumber === "") {
+                        display.textContent = 0;
+                    } else {
+                        display.textContent = display.textContent.slice(0, -1);
+                    };
+                };
+                result = undefined;
             };
 
             console.log(`Button pressed: ${event.target.textContent}`)
